@@ -1,4 +1,73 @@
-Código em .sqk
+
+### Cardinalidades
+
+**Users e AssemblyLines**
+
+A relação entre a tabela Users e AssemblyLines é de N para 1, já que vários funcionarios podem estar ligados a uma linha, mas um funcionário não pode estar em várias linhas.
+
+**Users e Favorites**
+
+Users e Favorites possuem associação 1 para 1, uma vez que um usuário terá apenas um favorito, que está atribuido ao seu id.
+
+
+**Users e Tasks**
+
+As entidades Users e Tasks possuem relacionamento 1 para N, em que uma Task de estudo dos manuais pode ser atribuída para diversos usuários ao mesmo tempo.
+
+**AssemblyLine e Products**
+
+As tabelas AssemblyLines e Products possuem relação 1 para N, uma vez que uma linha de montagem pode conter diversos produtos.
+
+**Favorites e Handbooks**
+
+A entidade Favorites se relaciona com Handbooks em associação 1 para 1, já que para cada item favorito adicionado, é associado um unico manual.
+
+**Products e Handbooks**
+
+Similar à relação entre Favorites e Handbooks, as tabelas Products e Handbooks também se relacionam 1 para 1, uma vez que cada produto tem um manual.
+
+**Handbooks e Tasks**
+
+As entidades Handbooks e Tasks possuem associação 1 para 1, uma vez que cada tarefa task é de apenas um manual.
+
+**Handbooks e AdditionalFiles**
+
+A tabela Handbooks se associa com AdditionalFiles em um relacionamento 1 para N, uma vez que poderão haver muitos arquivos adicionais para cada manual de produto.
+
+**Handbooks e HandbookVersions**
+
+Em relacionamento 1 para N, Handbooks e HandbookVersions se associam de maneira a permitir várias versões de manuais (atualizações ao longo do tempo) para cada manual específico.
+
+### Conexões entre chaves primárias e estrangeiras
+
+**AssemblerIds (foreign key)**: Por se tratar de uma chave estrangeira, esse atributo referência os IDs do montador da entidade users, ou seja, este atributo é utilizado para identificar o montador, e estará nesta entidade como chave estrangeira, pois é necessário que as tarefas sejam atribuídas para alguém. Desta forma, o ID representa para quem a tarefa é direcionada.
+
+**AssociatedHandbookIds (foreign key)**: Por se tratar de uma chave estrangeira, esse atributo referência os IDs do manual da entidade handbooks, ou seja, este atributo é utilizado para identificar o manual, e estará nesta entidade como chave estrangeira, pois é necessário identificar quais manuais o montador deve estudar.
+
+**AssociatedAdminIds (foreign key)**: Por se tratar de uma chave estrangeira, esse atributo referencia os IDs dos administradores da entidade users que estão atribuindo as tarefas em questão. O tipo deste atributo é inteiro.
+
+**UserIds (foreign key)**: Por se tratar de uma chave estrangeira, esse atributo referencia os IDs dos usuários da entidade users. Ele fica responsável por identificar qual usuário é responsável por um conjunto de manuais favoritados pelo próprio.
+
+**HandbookIds (foreign key)**: Por se tratar de uma chave estrangeira, esse atributo referencia os IDs dos manuais da entidade Handbooks  que foram favoritados pelo usuário, a fim de identificar qual o manual escolhido pelo usuário.
+
+**AssociatedAssemblyLineID (foreign key)**: Por se tratar de uma chave estrangeira, este atributo refere-se às linhas de montagem que foram alocadas para montar determinado produto, que serão definidas a partir dos IDs e nomes apresentados nos dois atributos acima.
+
+**AssociatedProductIds (foreign key)**: Por se tratar de uma chave estrangeira, esse atributo referencia os IDs dos produtos associados aos manuais, presente na tabela products .
+
+AdditionalFilesIds (foreign key): Por se tratar de uma chave estrangeira, esse atributo referencia os IDs dos manuais que podem ser adicionados pelos administradores, da tabela AdditionalFiles. Quando o administrador adiciona um manual, o ID atribuído a ele estará presente neste atributo.
+
+AssociatedHandbookIds (foreign key):Por se tratar de uma chave estrangeira, esse atributo referencia os IDs dos manuais que estão disponíveis dentro do banco de dados, presentes na tabela Handbooks.
+
+AssociatedAdministratorId (foreign key): Por se tratar de uma chave estrangeira, este atributo refere-se ao ID do engenheiro encarregado pela linha de montagem em questão, presente na tabela users.
+
+<div align="center">
+<sub>Banco de dados logico</sub>
+<img src="Captura de tela 2024-05-10 232046.png" width="100%" >
+<sup>Fonte: Material produzido pela Dell Design System (2018)</sup>
+</div>
+
+A partir deste modelo lógico, criou-se os seguintes códigos a fim de criar o modelo fisico do DBeaver:
+### Codigo em .sqk
 ```javascript
 CREATE TABLE IF NOT EXISTS "users" (
 	"Ids" bigint GENERATED ALWAYS AS IDENTITY NOT NULL UNIQUE,
@@ -78,7 +147,7 @@ ALTER TABLE "AssembleLine" ADD CONSTRAINT "AssembleLine_fk3" FOREIGN KEY ("Assoc
 ALTER TABLE "Products" ADD CONSTRAINT "Products_fk2" FOREIGN KEY ("AssociatedAssembleLineId") REFERENCES "AssembleLine"("Ids");
 
 ```
-Codigo em .xml
+### Codigo em .xml
 
 ```javascript
 <?xml version="1.0" encoding="UTF-8"?>
@@ -197,64 +266,4 @@ Codigo em .xml
 </database>
 
 ```
-**Cardinalidades**
-
-*Users e AssemblyLines
-
-A relação entre a tabela Users e AssemblyLines é de N para 1, já que podem haver muitos funcionários se relacionando com apenas uma (e apenas uma) linha de montagem por vez.
-
-Users e Favorites
-
-Users e Favorites possuem associação 1 para 1, uma vez que um usuário terá apenas uma página de favoritos contendo seus manuais favoritos.
-
-
-Users e Tasks
-
-As entidades Users e Tasks possuem relacionamento 1 para N, em que uma Task de estudo dos manuais pode ser atribuída para diversos usuários ao mesmo tempo.
-
-AssemblyLine e Products
-
-As tabelas AssemblyLines e Products possuem relação 1 para N, já que uma mesma linha de montagem pode conter diversos produtos para produção.
-
-Favorites e Handbooks
-
-A entidade Favorites se relaciona com Handbooks em associação 1 para 1, já que para cada item favorito adicionado, um único manual é associado ao item.
-
-Products e Handbooks
-
-Similar à relação entre Favorites e Handbooks, as tabelas Products e Handbooks também se relacionam 1 para 1, uma vez que há apenas um (e apenas um) manual para cada produto.
-
-Handbooks e Tasks
-
-As entidades Handbooks e Tasks possuem associação 1 para 1, uma vez que para cada tarefa definida na tabela Tasks, há relação com apenas um manual.
-
-Handbooks e AdditionalFiles
-
-A tabela Handbooks se associa com AdditionalFiles em um relacionamento 1 para N, uma vez que poderão haver muitos arquivos adicionais para cada manual de produto.
-
-Handbooks e HandbookVersions
-
-Em relacionamento 1 para N, Handbooks e HandbookVersions se associam de maneira a permitir várias versões de manuais (atualizações ao longo do tempo) para cada manual específico.
-
-**Conexões entre chaves primárias e estrangeiras**
-
-AssemblerIds (foreign key): Por se tratar de uma chave estrangeira, esse atributo referência os IDs do montador da entidade users, ou seja, este atributo é utilizado para identificar o montador, e estará nesta entidade como chave estrangeira, pois é necessário que as tarefas sejam atribuídas para alguém. Desta forma, o ID representa para quem a tarefa é direcionada.
-
-AssociatedHandbookIds (foreign key): Por se tratar de uma chave estrangeira, esse atributo referência os IDs do manual da entidade handbooks, ou seja, este atributo é utilizado para identificar o manual, e estará nesta entidade como chave estrangeira, pois é necessário identificar quais manuais o montador deve estudar.
-
-AssociatedAdminIds (foreign key): Por se tratar de uma chave estrangeira, esse atributo referencia os IDs dos administradores da entidade users que estão atribuindo as tarefas em questão. O tipo deste atributo é inteiro.
-
-UserIds (foreign key): Por se tratar de uma chave estrangeira, esse atributo referencia os IDs dos usuários da entidade users. Ele fica responsável por identificar qual usuário é responsável por um conjunto de manuais favoritados pelo próprio.
-
-HandbookIds (foreign key): Por se tratar de uma chave estrangeira, esse atributo referencia os IDs dos manuais da entidade Handbooks  que foram favoritados pelo usuário, a fim de identificar qual o manual escolhido pelo usuário.
-
-AssociatedAssemblyLineID (foreign key): Por se tratar de uma chave estrangeira, este atributo refere-se às linhas de montagem que foram alocadas para montar determinado produto, que serão definidas a partir dos IDs e nomes apresentados nos dois atributos acima.
-
-AssociatedProductIds (foreign key): Por se tratar de uma chave estrangeira, esse atributo referencia os IDs dos produtos associados aos manuais, presente na tabela products .
-
-AdditionalFilesIds (foreign key): Por se tratar de uma chave estrangeira, esse atributo referencia os IDs dos manuais que podem ser adicionados pelos administradores, da tabela AdditionalFiles. Quando o administrador adiciona um manual, o ID atribuído a ele estará presente neste atributo.
-
-AssociatedHandbookIds (foreign key):Por se tratar de uma chave estrangeira, esse atributo referencia os IDs dos manuais que estão disponíveis dentro do banco de dados, presentes na tabela Handbooks.
-
-AssociatedAdministratorId (foreign key): Por se tratar de uma chave estrangeira, este atributo refere-se ao ID do engenheiro encarregado pela linha de montagem em questão, presente na tabela users.
 
