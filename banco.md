@@ -67,7 +67,7 @@ AssociatedAdministratorId (foreign key): Por se tratar de uma chave estrangeira,
 </div>
 
 A partir deste modelo lógico, criou-se os seguintes códigos a fim de criar o modelo fisico do DBeaver:
-### Codigo em .sqk
+### Codigo em .sql
 ```javascript
 CREATE TABLE IF NOT EXISTS "users" (
 	"Ids" bigint GENERATED ALWAYS AS IDENTITY NOT NULL UNIQUE,
